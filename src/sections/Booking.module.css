@@ -1,0 +1,612 @@
+/* ═══════════════════════════════════════════
+   BOSS HOUSE — Booking (redesigned)
+   ═══════════════════════════════════════════ */
+
+.booking {
+    position: relative;
+    padding: 6rem 0 7rem;
+    overflow: hidden;
+}
+
+/* ── Backgrounds ── */
+.bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/fundo.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    filter: brightness(.18) saturate(.4);
+    z-index: 0;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 8, 8, .75) 0%, rgba(8, 8, 8, .6) 50%, rgba(8, 8, 8, .85) 100%);
+    z-index: 1;
+}
+
+/* ── Layout ── */
+.wrapper {
+    position: relative;
+    z-index: 2;
+    width: min(1100px, 94vw);
+    margin-inline: auto;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0, 0, 0, .7), 0 0 0 1px rgba(182, 154, 110, .14);
+}
+
+/* ══════════════════════════════════════════
+   LEFT PANEL
+   ══════════════════════════════════════════ */
+.panelLeft {
+    background: linear-gradient(160deg, #141008 0%, #0e0b05 60%, #090804 100%);
+    padding: 3rem 2.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    border-right: 1px solid rgba(182, 154, 110, .1);
+    position: relative;
+    overflow: hidden;
+}
+
+.panelLeft::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(182, 154, 110, .12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.panelLeft::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: -60px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(182, 154, 110, .07) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.panelTop {
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+}
+
+.panelLogo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    object-fit: cover;
+    box-shadow: 0 0 24px rgba(182, 154, 110, .3);
+}
+
+.panelTitle {
+    font-family: var(--ff-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+}
+
+.panelTitle span {
+    color: var(--gold);
+    font-style: italic;
+}
+
+.panelSub {
+    font-size: .85rem;
+    color: var(--off-white);
+    opacity: .7;
+    line-height: 1.65;
+}
+
+/* Info list */
+.infoList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.infoItem {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+}
+
+.infoIcon {
+    font-size: 1.1rem;
+    margin-top: .1rem;
+    flex-shrink: 0;
+}
+
+.infoLabel {
+    display: block;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: .15rem;
+}
+
+.infoVal {
+    display: block;
+    font-size: .82rem;
+    color: var(--off-white);
+    opacity: .8;
+}
+
+/* Service preview */
+.servicePreview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(182, 154, 110, .08);
+    border: 1px solid rgba(182, 154, 110, .2);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    margin-top: auto;
+}
+
+.previewIcon {
+    font-size: 2rem;
+}
+
+.previewName {
+    display: block;
+    font-weight: 600;
+    font-size: .9rem;
+    color: var(--white);
+}
+
+.previewPrice {
+    font-size: .8rem;
+    color: var(--gold);
+    font-weight: 600;
+}
+
+/* ══════════════════════════════════════════
+   RIGHT PANEL
+   ══════════════════════════════════════════ */
+.panelRight {
+    background: rgba(12, 12, 12, .85);
+    backdrop-filter: blur(30px);
+    padding: 3rem 2.8rem;
+}
+
+/* ── Form ── */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ── Floating label group ── */
+.floatGroup {
+    position: relative;
+}
+
+.floatInput {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    padding: 1.6rem 1.2rem .6rem;
+    color: var(--white);
+    font-family: var(--ff-body);
+    font-size: .95rem;
+    outline: none;
+    transition: all .3s;
+    text-align: left;
+    cursor: text;
+    /* remove select appearance */
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.floatInput:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.floatInput:focus,
+.floatGroup:focus-within .floatInput {
+    border-color: var(--gold);
+    background: rgba(182, 154, 110, .05);
+    box-shadow: 0 0 0 3px rgba(182, 154, 110, .15);
+}
+
+input.floatInput[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    height: auto;
+}
+
+/* Hide date placeholder when empty, avoiding overlap */
+.floatGroup:not(.filled):not(:focus-within) input.floatInput[type='date'] {
+    color: transparent;
+}
+
+.hasError .floatInput {
+    border-color: #ff6970 !important;
+}
+
+/* Float label */
+.floatLabel {
+    position: absolute;
+    top: 50%;
+    left: 1.2rem;
+    transform: translateY(-50%);
+    font-size: .95rem;
+    color: rgba(255, 255, 255, .55);
+    pointer-events: none;
+    transition: top .25s ease, font-size .25s ease, color .25s ease, transform .25s ease;
+}
+
+.floatGroup:focus-within .floatLabel,
+.floatGroup.filled .floatLabel {
+    top: .6rem;
+    transform: none;
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.hasError .floatLabel {
+    color: #ff6970 !important;
+}
+
+/* Error message */
+.errMsg {
+    display: block;
+    font-size: .72rem;
+    color: #ff8080;
+    margin-top: .4rem;
+    padding-left: 1rem;
+}
+
+/* ── Custom select button ── */
+.selectBtn {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+}
+
+.selectBtn:focus {
+    outline: none;
+}
+
+.chevron {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--gold);
+}
+
+/* Backdrop */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+}
+
+/* Dropdown */
+.dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #161208;
+    border: 1px solid rgba(182, 154, 110, .18);
+    border-radius: var(--radius);
+    overflow: hidden;
+    list-style: none;
+    z-index: 10;
+    transform-origin: top;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .6);
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.dropdown::-webkit-scrollbar {
+    width: 4px;
+}
+
+.dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+    background: rgba(182, 154, 110, .3);
+    border-radius: 2px;
+}
+
+.dropItem {
+    padding: .8rem 1rem;
+    cursor: pointer;
+    transition: background .2s;
+    border-bottom: 1px solid rgba(255, 255, 255, .04);
+}
+
+.dropItem:last-child {
+    border-bottom: none;
+}
+
+.dropItem:hover {
+    background: rgba(182, 154, 110, .08);
+}
+
+.dropItemActive {
+    background: rgba(182, 154, 110, .12) !important;
+}
+
+/* Service option */
+.svcOption {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    width: 100%;
+}
+
+.svcIcon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.svcName {
+    font-size: .88rem;
+    color: var(--white);
+    flex: 1;
+}
+
+.svcPrice {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--gold);
+    background: rgba(182, 154, 110, .1);
+    padding: .15rem .5rem;
+    border-radius: 100px;
+    border: 1px solid rgba(182, 154, 110, .2);
+}
+
+/* Professional option */
+.proOption {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.proInitials {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--black);
+    flex-shrink: 0;
+}
+
+.proName {
+    display: block;
+    font-size: .88rem;
+    color: var(--white);
+    font-weight: 500;
+}
+
+.proRole {
+    display: block;
+    font-size: .72rem;
+    color: var(--gold);
+    margin-top: .05rem;
+}
+
+/* ── Time grid ── */
+.timeSection {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+.timeLabel {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--off-white);
+    padding-left: 0.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.req {
+    color: var(--gold);
+}
+
+.dateWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.dateIconWrapper {
+    position: absolute;
+    right: 1.2rem;
+    top: 1.95rem;
+    /* Vertically centered relative to the input box before error takes space */
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendarIcon {
+    width: 20px;
+    height: 20px;
+}
+
+.timeGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .5rem;
+}
+
+.timeBtn {
+    padding: .8rem .4rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    color: var(--off-white);
+    font-family: var(--ff-body);
+    font-size: .82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    text-align: center;
+}
+
+.timeBtn:hover {
+    background: rgba(182, 154, 110, .1);
+    border-color: rgba(182, 154, 110, .3);
+    color: var(--gold-light);
+}
+
+.timeBtnActive {
+    background: var(--gold) !important;
+    border-color: var(--gold) !important;
+    color: var(--black) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 16px rgba(182, 154, 110, .4);
+}
+
+/* ── Submit ── */
+.submitBtn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #116b3f;
+    /* Darker more elegant green */
+    color: #fff;
+    border: none;
+    padding: 1.1rem 2rem;
+    border-radius: var(--radius);
+    font-size: .95rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .3s, transform .3s, box-shadow .3s;
+    box-shadow: 0 4px 20px rgba(17, 107, 63, .4);
+    margin-top: .5rem;
+    min-height: 56px;
+}
+
+.submitBtn:hover:not(:disabled) {
+    background: #13824b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(19, 130, 75, .6);
+}
+
+.submitBtn:disabled {
+    opacity: .75;
+    cursor: default;
+}
+
+.submitSent {
+    background: rgba(182, 154, 110, .2) !important;
+    border: 1.5px solid var(--gold) !important;
+    color: var(--gold) !important;
+    box-shadow: none !important;
+}
+
+.btnInner {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+}
+
+.checkmark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--black);
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, .25);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 900px) {
+    .card {
+        grid-template-columns: 1fr;
+    }
+
+    .panelLeft {
+        border-right: none;
+        border-bottom: 1px solid rgba(182, 154, 110, .1);
+        padding: 2.5rem 2rem;
+    }
+
+    .servicePreview {
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .panelRight {
+        padding: 2rem 1.2rem;
+    }
+
+    .timeGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

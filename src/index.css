@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════════════
+   BOSS HOUSE — Global CSS / Design System
+   ═══════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Palette */
+  --gold: #B69A6E;
+  --gold-light: #D5B98A;
+  --gold-dark: #8E7453;
+  --gold-glow: rgba(182, 154, 110, .25);
+  --black: #0A0A0A;
+  --dark: #121212;
+  --dark-2: #1A1A1A;
+  --dark-3: #222222;
+  --white: #EFECE6;
+  --off-white: #C0B9AF;
+  --gray: #777;
+  --wpp: #25D366;
+
+  /* Typography */
+  --ff-display: 'Rye', serif;
+  --ff-heading: 'Rye', serif;
+  --ff-body: 'Outfit', sans-serif;
+
+  /* Misc */
+  --radius: 12px;
+  --radius-lg: 22px;
+  --transition: .4s cubic-bezier(.4, 0, .2, 1);
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--ff-body);
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: var(--ff-body);
+  cursor: pointer;
+}
+
+/* ── Smooth scrollbar ── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* ── Selection ── */
+::selection {
+  background: var(--gold);
+  color: var(--black);
+}
