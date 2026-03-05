@@ -1,30 +1,62 @@
-import { useRef } from 'react'
+import { useRef, useCallback } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import styles from './Hero.module.css'
 
-const letterVariants = {
-    hidden: { opacity: 0, y: 60 },
-    visible: (i) => ({
-        opacity: 1, y: 0,
-        transition: { delay: 0.5 + i * 0.07, duration: 0.7, ease: [.4, 0, .2, 1] }
-    }),
-}
-
-const BOSS = 'Boss'.split('')
-const HOUSE = 'HOUSE'.split('')
 
 export default function Hero() {
     const ref = useRef(null)
+    const videoRef = useRef(null)
     const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
 
     // Parallax transforms
     const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '-15%'])
     const opacity = useTransform(scrollYProgress, [0, .6], [1, 0])
 
+    // Fade-in suave quando o vídeo estiver pronto
+    const handleCanPlay = useCallback(() => {
+        const v = videoRef.current
+        if (v) v.classList.add(styles.videoReady)
+    }, [])
+
+    // Loop suave: fade-out perto do final, depois reseta
+    const handleTimeUpdate = useCallback(() => {
+        const v = videoRef.current
+        if (!v || !v.duration) return
+        const remaining = v.duration - v.currentTime
+        if (remaining <= 1.5 && !v.dataset.fading) {
+            v.dataset.fading = 'true'
+            v.classList.add(styles.videoFadeOut)
+            setTimeout(() => {
+                v.currentTime = 0
+                v.classList.remove(styles.videoFadeOut)
+                delete v.dataset.fading
+            }, 1400)
+        }
+    }, [])
+
+
     return (
         <section className={styles.hero} id="home" ref={ref}>
-            {/* Continuous background */}
+            {/* Desktop background */}
             <div className={styles.bg} />
+
+            {/* Mobile video background */}
+            <video
+                ref={videoRef}
+                className={styles.videoBg}
+                src="/background.mp4"
+                autoPlay
+                muted
+                loop={false}
+                playsInline
+                preload="auto"
+                onCanPlay={handleCanPlay}
+                onTimeUpdate={handleTimeUpdate}
+            />
+
+            {/* Blur layer (mobile only) */}
+            <div className={styles.blurLayer} />
+
             <div className={styles.overlay} />
 
             {/* Floating particles */}
@@ -85,39 +117,7 @@ export default function Hero() {
                     Est. 2020 &nbsp;·&nbsp; Premium Barber House
                 </motion.p>
 
-                {/* Animated title */}
-                <h1 className={styles.title}>
-                    <span className={styles.titleRow}>
-                        {BOSS.map((l, i) => (
-                            <motion.span
-                                key={i} custom={i}
-                                variants={letterVariants}
-                                initial="hidden"
-                                animate="visible"
-                                className={styles.letter}
-                            >{l}</motion.span>
-                        ))}
-                    </span>
-                    <span className={`${styles.titleRow} ${styles.gold}`}>
-                        {HOUSE.map((l, i) => (
-                            <motion.span
-                                key={i} custom={i + 4}
-                                variants={letterVariants}
-                                initial="hidden"
-                                animate="visible"
-                                className={styles.letter}
-                            >{l}</motion.span>
-                        ))}
-                    </span>
-                </h1>
-                <motion.p
-                    className={styles.subtitle}
-                    initial={{ opacity: 0, letterSpacing: '0.1em' }}
-                    animate={{ opacity: 1, letterSpacing: '0.5em' }}
-                    transition={{ duration: 1, delay: 1.1 }}
-                >
-                    BARBEARIA
-                </motion.p>
+
 
                 <motion.p
                     className={styles.tagline}
@@ -136,7 +136,7 @@ export default function Hero() {
                     transition={{ duration: .7, delay: 1.5 }}
                 >
                     <a href="#booking" className={styles.btnPrimary} data-cursor>
-                        <span>Agendar Agora</span>
+                        <span>Agendar Hórario</span>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
