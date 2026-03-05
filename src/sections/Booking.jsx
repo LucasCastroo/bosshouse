@@ -2,36 +2,89 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './Booking.module.css'
 
-/* ─── Data ─────────────────────────────────── */
-const SERVICES = [
-    { value: 'Corte Clássico', icon: '✂', label: 'Corte Clássico', price: 'R$ 45+' },
-    { value: 'Barba Completa', icon: '🪒', label: 'Barba Completa', price: 'R$ 35+' },
-    { value: 'Combo VIP (Corte+Barba)', icon: '👑', label: 'Combo VIP', price: 'R$ 90+' },
-    { value: 'Pigmentação', icon: '✨', label: 'Pigmentação', price: 'R$ 50+' },
-    { value: 'Sobrancelha', icon: '💆', label: 'Sobrancelha', price: 'R$ 20+' },
-    { value: 'Hidratação Capilar', icon: '🌿', label: 'Hidratação Capilar', price: 'R$ 40+' },
+/* ─── Categorias de Serviços ───────────────── */
+const SERVICE_CATEGORIES = [
+    {
+        id: 'barba', label: 'Barba', icon: '🪒',
+        services: [
+            { value: 'Barba', label: 'Barba', price: 'R$ 50,00' },
+            { value: 'Barbaterapia', label: 'Barbaterapia', price: 'R$ 100,00' },
+            { value: 'Pigmentação', label: 'Pigmentação', price: 'R$ 60,00' },
+        ],
+    },
+    {
+        id: 'combos', label: 'Combos', icon: '👑',
+        services: [
+            { value: 'Corte Duplo', label: 'Corte Duplo', price: 'R$ 120,00' },
+            { value: 'Corte e Barba', label: 'Corte e Barba', price: 'R$ 110,00' },
+            { value: 'Corte e Coloração', label: 'Corte e Coloração', price: 'R$ 160,00' },
+            { value: 'Corte e Selagem', label: 'Corte e Selagem', price: 'R$ 160,00' },
+            { value: 'Corte e Sobrancelha', label: 'Corte e Sobrancelha', price: 'R$ 85,00' },
+            { value: 'Corte, Barba e Pigmentação', label: 'Corte, Barba e Pigmentação', price: 'R$ 170,00' },
+            { value: 'Corte, Barba e Selagem', label: 'Corte, Barba e Selagem', price: 'R$ 210,00' },
+            { value: 'Corte, Barba e Sobrancelha', label: 'Corte, Barba e Sobrancelha', price: 'R$ 135,00' },
+            { value: 'Máquina + Barba', label: 'Máquina + Barba', price: 'R$ 80,00' },
+        ],
+    },
+    {
+        id: 'corte', label: 'Corte', icon: '✂',
+        services: [
+            { value: 'Botox', label: 'Botox', price: 'R$ 100,00' },
+            { value: 'Coloração', label: 'Coloração', price: 'R$ 100,00' },
+            { value: 'Corte Feminino', label: 'Corte Feminino', price: 'R$ 70,00' },
+            { value: 'Corte', label: 'Corte', price: 'R$ 60,00' },
+            { value: 'Desondulação', label: 'Desondulação', price: 'R$ 60,00' },
+            { value: 'Hidratação', label: 'Hidratação', price: 'R$ 50,00' },
+            { value: 'Máquina (zero)', label: 'Máquina (zero)', price: 'R$ 30,00' },
+            { value: 'Máquina', label: 'Máquina', price: 'R$ 30,00' },
+            { value: 'Penteado', label: 'Penteado', price: 'R$ 25,00' },
+            { value: 'Pezinho', label: 'Pezinho', price: 'R$ 25,00' },
+        ],
+    },
+    {
+        id: 'sobrancelha', label: 'Sobrancelha', icon: '💆',
+        services: [
+            { value: 'Sobrancelha', label: 'Sobrancelha', price: 'R$ 25,00' },
+        ],
+    },
 ]
+
+// Lista plana para lookup
+const SERVICES_FLAT = SERVICE_CATEGORIES.flatMap(c =>
+    c.services.map(s => ({ ...s, categoryIcon: c.icon }))
+)
 
 const PROS = [
-    { value: 'Marcos Ramos', role: 'Master Barber' },
-    { value: 'Rafael Lima', role: 'Senior Barber' },
-    { value: 'Davi Vieira', role: 'Barber & Stylist' },
-    { value: 'Thiago Moura', role: 'Junior Barber' },
-    { value: 'Qualquer disponível', role: 'Sem preferência' },
+    { value: 'Qualquer disponível', role: 'Sem preferência', photo: null },
+    { value: 'Theylo Fernandes', role: 'Barber Professional', photo: '/theylo.jpeg', photoPosition: 'center top' },
+    { value: 'Jhonatan Messias', role: 'Barber Professional', photo: '/jhonatan.jpeg' },
+    { value: 'Breno Barbosa', role: 'Barber Professional', photo: '/breno.jpeg' },
+    { value: 'Matheus Barbosa', role: 'Barber Professional', photo: '/matheus.jpeg' },
+    { value: 'Stewer Gabriel', role: 'Barber Professional', photo: '/stewer.jpeg' },
 ]
 
-const TIMES = [
-    '08:00', '09:00', '10:00', '11:00',
-    '13:00', '14:00', '15:00', '16:00',
-    '17:00', '18:00', '19:00',
-]
+// Gera slots de 30 em 30 min — seg-sex: 09h–19h | sáb: 09h–17h | dom: fechado
+function getTimeSlots(dateStr) {
+    if (!dateStr) return []
+    const date = new Date(dateStr + 'T12:00:00')
+    const dow = date.getDay()
+    if (dow === 0) return []
+    const endHour = dow === 6 ? 17 : 19
+    const slots = []
+    for (let h = 9; h < endHour; h++) {
+        slots.push(`${String(h).padStart(2, '0')}:00`)
+        slots.push(`${String(h).padStart(2, '0')}:30`)
+    }
+    slots.push(`${String(endHour).padStart(2, '0')}:00`)
+    return slots
+}
 
 const today = new Date()
 const MIN_DATE = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
     .toISOString().split('T')[0]
 
 const INITIAL = {
-    name: '', service: '', professional: '',
+    name: '', service: [], professional: '',
     date: '', time: '', whatsapp: '5563991030755',
 }
 
@@ -144,24 +197,125 @@ function CustomSelect({ id, label, value, onChange, error, options, renderOption
         </div>
     )
 }
-function TimeGrid({ value, onChange, error }) {
+
+/* ─── Service Tabs (multi-select) ────────────── */
+function ServiceTabs({ value, onChange, error }) {
+    const [activeTab, setActiveTab] = useState(SERVICE_CATEGORIES[0].id)
+    const currentCategory = SERVICE_CATEGORIES.find(c => c.id === activeTab)
+
+    const toggle = (svcValue) => {
+        onChange(prev =>
+            prev.includes(svcValue)
+                ? prev.filter(v => v !== svcValue)
+                : [...prev, svcValue]
+        )
+    }
+
+    return (
+        <div className={styles.serviceTabs}>
+            <p className={styles.timeLabel}>
+                Serviço <span className={styles.req}>*</span>
+                {value.length > 0 && (
+                    <span className={styles.selectedCount}>{value.length} selecionado{value.length > 1 ? 's' : ''}</span>
+                )}
+            </p>
+
+            {/* Tab pills */}
+            <div className={styles.tabList}>
+                {SERVICE_CATEGORIES.map(cat => (
+                    <button
+                        key={cat.id}
+                        type="button"
+                        className={`${styles.tabBtn} ${activeTab === cat.id ? styles.tabBtnActive : ''}`}
+                        onClick={() => setActiveTab(cat.id)}
+                    >
+                        {cat.label}
+                    </button>
+                ))}
+            </div>
+
+            {/* Service list */}
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={activeTab}
+                    className={styles.svcList}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: .2 }}
+                >
+                    {currentCategory.services.map((svc, i) => {
+                        const isSelected = value.includes(svc.value)
+                        return (
+                            <motion.button
+                                key={svc.value}
+                                type="button"
+                                className={`${styles.svcRow} ${isSelected ? styles.svcRowActive : ''}`}
+                                onClick={() => toggle(svc.value)}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * .04 }}
+                                whileTap={{ scale: .98 }}
+                            >
+                                <span className={styles.svcRowName}>{svc.label}</span>
+                                <span className={styles.svcRowPrice}>{svc.price}</span>
+                                <span className={`${styles.svcCheckbox} ${isSelected ? styles.svcCheckboxActive : ''}`}>
+                                    {isSelected && (
+                                        <motion.span
+                                            initial={{ scale: 0 }}
+                                            animate={{ scale: 1 }}
+                                            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                                        >
+                                            ✓
+                                        </motion.span>
+                                    )}
+                                </span>
+                            </motion.button>
+                        )
+                    })}
+                </motion.div>
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {error && (
+                    <motion.span className={styles.errMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        ⚠ {error}
+                    </motion.span>
+                )}
+            </AnimatePresence>
+        </div>
+    )
+}
+
+/* ─── Time Grid ─────────────────────────────── */
+function TimeGrid({ value, onChange, error, date }) {
+    const slots = getTimeSlots(date)
+    const dateObj = date ? new Date(date + 'T12:00:00') : null
+    const isSunday = dateObj && dateObj.getDay() === 0
+
     return (
         <div className={styles.timeSection}>
             <p className={styles.timeLabel}>Horário <span className={styles.req}>*</span></p>
-            <div className={styles.timeGrid}>
-                {TIMES.map(t => (
-                    <motion.button
-                        key={t}
-                        type="button"
-                        className={`${styles.timeBtn} ${value === t ? styles.timeBtnActive : ''}`}
-                        onClick={() => onChange(t)}
-                        whileHover={{ scale: 1.06 }}
-                        whileTap={{ scale: .95 }}
-                    >
-                        {t}
-                    </motion.button>
-                ))}
-            </div>
+            {isSunday ? (
+                <p className={styles.closedMsg}>🚫 Fechado aos domingos</p>
+            ) : slots.length === 0 ? (
+                <p className={styles.closedMsg}>Selecione uma data para ver os horários</p>
+            ) : (
+                <div className={styles.timeGrid}>
+                    {slots.map(t => (
+                        <motion.button
+                            key={t}
+                            type="button"
+                            className={`${styles.timeBtn} ${value === t ? styles.timeBtnActive : ''}`}
+                            onClick={() => onChange(t)}
+                            whileHover={{ scale: 1.06 }}
+                            whileTap={{ scale: .95 }}
+                        >
+                            {t}
+                        </motion.button>
+                    ))}
+                </div>
+            )}
             <AnimatePresence>
                 {error && (
                     <motion.span className={styles.errMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -181,14 +335,18 @@ export default function Booking() {
     const [sent, setSent] = useState(false)
 
     const set = (key, val) => {
-        setForm(f => ({ ...f, [key]: val }))
+        if (typeof val === 'function') {
+            setForm(f => ({ ...f, [key]: val(f[key]) }))
+        } else {
+            setForm(f => ({ ...f, [key]: val }))
+        }
         setErrors(e => ({ ...e, [key]: '' }))
     }
 
     const validate = () => {
         const e = {}
         if (!form.name.trim()) e.name = 'Informe seu nome.'
-        if (!form.service) e.service = 'Escolha um serviço.'
+        if (!form.service.length) e.service = 'Escolha pelo menos um serviço.'
         if (!form.professional) e.professional = 'Escolha um profissional.'
         if (!form.date) e.date = 'Informe a data.'
         if (!form.time) e.time = 'Escolha um horário.'
@@ -203,12 +361,12 @@ export default function Booking() {
 
         const [y, m, d] = form.date.split('-')
         const number = form.whatsapp.replace(/\D/g, '')
-        const svc = SERVICES.find(s => s.value === form.service)
+        const svcList = form.service.join(', ')
 
         const msg =
             `Olá! Gostaria de agendar na *Boss House* 💈\n\n` +
             `👤 *Nome:* ${form.name}\n` +
-            `${svc?.icon || '✂'} *Serviço:* ${form.service}\n` +
+            `✂ *Serviço(s):* ${svcList}\n` +
             `💈 *Profissional:* ${form.professional}\n` +
             `📅 *Data:* ${d}/${m}/${y}\n` +
             `🕐 *Horário:* ${form.time}\n\n` +
@@ -223,7 +381,8 @@ export default function Booking() {
         }, 600)
     }
 
-    const selectedService = SERVICES.find(s => s.value === form.service)
+    // Serviços selecionados para preview no painel esquerdo
+    const selectedServices = SERVICES_FLAT.filter(s => form.service.includes(s.value))
 
     return (
         <section className={styles.booking} id="booking">
@@ -250,8 +409,8 @@ export default function Booking() {
                         {/* Info blocks */}
                         <div className={styles.infoList}>
                             {[
-                                { icon: '📍', label: 'Endereço', val: 'Rua da Barbearia, 123 – Centro' },
-                                { icon: '🕐', label: 'Horários', val: 'Seg–Sáb: 08h às 20h' },
+                                { icon: '📍', label: 'Endereço', val: 'Quadra 103 Norte - Rua de Pedestre NO 3, 20 - Plano Diretor Norte, Palmas - TO' },
+                                { icon: '🕐', label: 'Horários', val: 'Seg–Sex: 09h às 19h  |  Sáb: 09h às 17h' },
                                 { icon: '📞', label: 'Telefone', val: '(63) 9 9103-0755' },
                             ].map(info => (
                                 <div key={info.label} className={styles.infoItem}>
@@ -264,21 +423,24 @@ export default function Booking() {
                             ))}
                         </div>
 
-                        {/* Selected service preview */}
-                        <AnimatePresence mode="wait">
-                            {selectedService && (
+                        {/* Selected services preview */}
+                        <AnimatePresence>
+                            {selectedServices.length > 0 && (
                                 <motion.div
-                                    key={selectedService.value}
                                     className={styles.servicePreview}
                                     initial={{ opacity: 0, y: 12 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -12 }}
                                     transition={{ duration: .3 }}
                                 >
-                                    <span className={styles.previewIcon}>{selectedService.icon}</span>
-                                    <div>
-                                        <span className={styles.previewName}>{selectedService.label}</span>
-                                        <span className={styles.previewPrice}>{selectedService.price}</span>
+                                    <span className={styles.previewIcon}>✂</span>
+                                    <div className={styles.previewServiceList}>
+                                        {selectedServices.map(s => (
+                                            <span key={s.value} className={styles.previewServiceItem}>
+                                                <span className={styles.previewName}>{s.label}</span>
+                                                <span className={styles.previewPrice}>{s.price}</span>
+                                            </span>
+                                        ))}
                                     </div>
                                 </motion.div>
                             )}
@@ -296,18 +458,11 @@ export default function Booking() {
                                 error={errors.name} autoComplete="name"
                             />
 
-                            {/* Service */}
-                            <CustomSelect
-                                id="service" label="Tipo de Serviço"
-                                value={form.service} onChange={v => set('service', v)}
-                                error={errors.service} options={SERVICES}
-                                renderOption={(o, compact) => (
-                                    <span className={styles.svcOption}>
-                                        <span className={styles.svcIcon}>{o.icon}</span>
-                                        <span className={styles.svcName}>{o.label}</span>
-                                        {!compact && <span className={styles.svcPrice}>{o.price}</span>}
-                                    </span>
-                                )}
+                            {/* Service tabs */}
+                            <ServiceTabs
+                                value={form.service}
+                                onChange={v => set('service', v)}
+                                error={errors.service}
                             />
 
                             {/* Professional */}
@@ -317,9 +472,18 @@ export default function Booking() {
                                 error={errors.professional} options={PROS}
                                 renderOption={(o, compact) => (
                                     <span className={styles.proOption}>
-                                        <span className={styles.proInitials}>
-                                            {o.value.split(' ').map(w => w[0]).slice(0, 2).join('')}
-                                        </span>
+                                        {o.photo ? (
+                                            <img
+                                                src={o.photo}
+                                                alt={o.value}
+                                                className={`${styles.proPhoto} ${compact && form.professional === o.value ? styles.proPhotoSelected : ''}`}
+                                                style={{ objectPosition: o.photoPosition || 'center center' }}
+                                            />
+                                        ) : (
+                                            <span className={styles.proInitials}>
+                                                {o.value.split(' ').map(w => w[0]).slice(0, 2).join('')}
+                                            </span>
+                                        )}
                                         <span>
                                             <span className={styles.proName}>{o.value}</span>
                                             {!compact && <span className={styles.proRole}>{o.role}</span>}
@@ -348,7 +512,7 @@ export default function Booking() {
                             {/* Time grid */}
                             <TimeGrid
                                 value={form.time} onChange={v => set('time', v)}
-                                error={errors.time}
+                                error={errors.time} date={form.date}
                             />
 
                             {/* Submit */}

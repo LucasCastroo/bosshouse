@@ -401,8 +401,8 @@ input.floatInput[type='date']::-webkit-calendar-picker-indicator {
 }
 
 .proInitials {
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--gold-dark), var(--gold));
     display: flex;
@@ -412,6 +412,22 @@ input.floatInput[type='date']::-webkit-calendar-picker-indicator {
     font-weight: 700;
     color: var(--black);
     flex-shrink: 0;
+}
+
+.proPhoto {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(182, 154, 110, .3);
+    flex-shrink: 0;
+    transition: border-color .2s;
+}
+
+.proPhoto:hover,
+.proPhotoSelected {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(182, 154, 110, .25);
 }
 
 .proName {
@@ -447,6 +463,195 @@ input.floatInput[type='date']::-webkit-calendar-picker-indicator {
 
 .req {
     color: var(--gold);
+}
+
+/* Selected count badge */
+.selectedCount {
+    margin-left: .6rem;
+    background: var(--gold);
+    color: var(--black);
+    font-size: .65rem;
+    font-weight: 700;
+    padding: .1rem .45rem;
+    border-radius: 100px;
+    vertical-align: middle;
+}
+
+/* Multi-service preview */
+.previewServiceList {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    flex: 1;
+}
+
+.previewServiceItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+}
+
+.previewServiceItem .previewName {
+    font-size: .82rem;
+}
+
+.previewServiceItem .previewPrice {
+    font-size: .75rem;
+}
+
+.closedMsg {
+    font-size: .85rem;
+    color: var(--off-white);
+    opacity: .6;
+    padding: 1rem;
+    text-align: center;
+    border: 1px dashed rgba(182, 154, 110, .2);
+    border-radius: var(--radius);
+}
+
+/* ── Service Tabs ── */
+.serviceTabs {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+.tabList {
+    display: flex;
+    gap: .5rem;
+    overflow-x: auto;
+    padding-bottom: .25rem;
+    scrollbar-width: none;
+}
+
+.tabList::-webkit-scrollbar {
+    display: none;
+}
+
+.tabBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .75rem 1.5rem;
+    border-radius: 100px;
+    border: 1.5px solid rgba(182, 154, 110, .25);
+    background: transparent;
+    color: var(--off-white);
+    font-family: var(--ff-body);
+    font-size: .92rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .25s;
+    min-height: 44px;
+}
+
+.tabBtn:hover {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    background: rgba(182, 154, 110, .06);
+}
+
+.tabBtnActive {
+    background: var(--gold) !important;
+    border-color: var(--gold) !important;
+    color: var(--black) !important;
+    box-shadow: 0 4px 16px rgba(182, 154, 110, .35);
+}
+
+.tabIcon {
+    font-size: .9rem;
+}
+
+/* Service list rows */
+.svcList {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: .25rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(182, 154, 110, .3) transparent;
+}
+
+.svcList::-webkit-scrollbar {
+    width: 3px;
+}
+
+.svcList::-webkit-scrollbar-thumb {
+    background: rgba(182, 154, 110, .3);
+    border-radius: 2px;
+}
+
+.svcRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.15rem 1.3rem;
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 255, 255, .07);
+    background: rgba(0, 0, 0, .25);
+    cursor: pointer;
+    transition: all .2s;
+    font-family: var(--ff-body);
+    text-align: left;
+    position: relative;
+    gap: .75rem;
+    min-height: 60px;
+}
+
+.svcRow:hover {
+    background: rgba(182, 154, 110, .08);
+    border-color: rgba(182, 154, 110, .25);
+}
+
+.svcRowActive {
+    background: rgba(182, 154, 110, .12) !important;
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 1px rgba(182, 154, 110, .2);
+}
+
+.svcRowName {
+    font-size: 1rem;
+    color: var(--white);
+    flex: 1;
+}
+
+.svcRowActive .svcRowName {
+    color: var(--gold-light);
+    font-weight: 600;
+}
+
+.svcRowPrice {
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+}
+
+.svcCheckbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 1.5px solid rgba(182, 154, 110, .35);
+    background: transparent;
+    color: var(--black);
+    font-size: .7rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    transition: all .2s;
+}
+
+.svcCheckboxActive {
+    background: var(--gold) !important;
+    border-color: var(--gold) !important;
 }
 
 .dateWrapper {
@@ -585,9 +790,16 @@ input.floatInput[type='date']::-webkit-calendar-picker-indicator {
 /* ══════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════ */
+
+/* ── Tablet ── */
 @media (max-width: 900px) {
+    .booking {
+        padding: 4rem 0 5rem;
+    }
+
     .card {
         grid-template-columns: 1fr;
+        border-radius: 20px;
     }
 
     .panelLeft {
@@ -596,17 +808,200 @@ input.floatInput[type='date']::-webkit-calendar-picker-indicator {
         padding: 2.5rem 2rem;
     }
 
+    /* Hide decorative blobs on tablet */
+    .panelLeft::before,
+    .panelLeft::after {
+        display: none;
+    }
+
+    .panelTop {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .panelLogo {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+    }
+
+    .panelTitle {
+        font-size: 1.5rem;
+    }
+
+    .panelSub {
+        display: none;
+    }
+
+    .infoList {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: .75rem;
+    }
+
+    .infoItem {
+        flex: 1 1 calc(50% - .75rem);
+        min-width: 140px;
+    }
+
     .servicePreview {
         margin-top: 0;
     }
 }
 
+/* ── Mobile ── */
 @media (max-width: 560px) {
+    .booking {
+        padding: 3rem 0 4rem;
+    }
+
+    .wrapper {
+        width: 95vw;
+    }
+
+    .card {
+        border-radius: 16px;
+    }
+
+    .panelLeft {
+        padding: 1.6rem 1.2rem;
+    }
+
+    .panelTop {
+        gap: .9rem;
+    }
+
+    .panelLogo {
+        width: 44px;
+        height: 44px;
+    }
+
+    .panelTitle {
+        font-size: 1.3rem;
+    }
+
+    /* Stack info list vertically again on small screens */
+    .infoList {
+        flex-direction: column;
+        gap: .6rem;
+    }
+
+    .infoItem {
+        flex: unset;
+    }
+
+    .infoVal {
+        font-size: .78rem;
+    }
+
     .panelRight {
-        padding: 2rem 1.2rem;
+        padding: 1.6rem 1.2rem;
+    }
+
+    .form {
+        gap: 1.1rem;
+    }
+
+    /* Smaller floating inputs */
+    .floatInput {
+        padding: 1.4rem 1rem .5rem;
+        font-size: .9rem;
+    }
+
+    .floatLabel {
+        left: 1rem;
+        font-size: .9rem;
+    }
+
+    .floatGroup:focus-within .floatLabel,
+    .floatGroup.filled .floatLabel {
+        top: .5rem;
+        font-size: .6rem;
+    }
+
+    /* Tab pills — smaller on mobile */
+    .tabBtn {
+        padding: .42rem .75rem;
+        font-size: .72rem;
+    }
+
+    /* Service list — tighter rows */
+    .svcList {
+        max-height: 200px;
+    }
+
+    .svcRow {
+        padding: .65rem .85rem;
+    }
+
+    .svcRowName {
+        font-size: .83rem;
+    }
+
+    .svcRowPrice {
+        font-size: .75rem;
+    }
+
+    /* Time grid — 3 columns */
+    .timeGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .timeBtn {
+        padding: .65rem .2rem;
+        font-size: .78rem;
+    }
+
+    /* Submit button */
+    .submitBtn {
+        padding: 1rem 1.5rem;
+        font-size: .88rem;
+        min-height: 52px;
+    }
+
+    /* Service preview — compact */
+    .servicePreview {
+        padding: .8rem 1rem;
+        gap: .75rem;
+    }
+
+    .previewIcon {
+        font-size: 1.5rem;
+    }
+
+    .previewName {
+        font-size: .8rem;
+    }
+
+    .previewPrice {
+        font-size: .75rem;
+    }
+
+    /* Dropdown */
+    .dropdown {
+        max-height: 220px;
+    }
+}
+
+/* ── Extra small (< 380px) ── */
+@media (max-width: 380px) {
+
+    .panelLeft,
+    .panelRight {
+        padding: 1.4rem 1rem;
     }
 
     .timeGrid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tabBtn {
+        padding: .38rem .6rem;
+        font-size: .68rem;
+    }
+
+    .panelTitle {
+        font-size: 1.15rem;
     }
 }
